@@ -1,0 +1,263 @@
+custom:
+  security:
+    admin:
+      username: admin@mail.com
+      password: password
+      roles:
+        - admin
+        - user
+    user:
+      username: user@mail.com
+      password: password
+      roles:
+        - user
+    permit:
+      - /actuator/health
+      - /dist/**
+logging:
+  include-application-name: false
+  level:
+    com.hamza: debug
+    org.hibernate:
+      # orm.jdbc.bind: trace
+      SQL: debug
+      stat: debug
+management:
+  endpoint:
+    env:
+      show-values: always
+    health:
+      group:
+        readiness:
+          include: '*'
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+server:
+  compression:
+    enabled: true
+    mime-types: application/javascript, application/json, application/xml, text/css, text/html, text/javascript, text/plain, text/xml
+    min-response-size: 1500B
+  forward-headers-strategy: native
+  http2:
+    enabled: true
+  port: 8080
+  ssl:
+    enabled: false
+spring:
+  application:
+    name: thymx
+  config:
+    activate:
+      on-profile: default
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 100
+  datasource:
+    driverClassName: org.postgresql.Driver
+    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://${custom.pg.host:localhost}:5432/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+  devtools:
+    livereload:
+      enabled: true
+  docker:
+    compose:
+      enabled: true
+      file: compose.spring.yaml
+      profiles:
+        active:
+          - postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        batch_fetch_style: dynamic
+        cache:
+          region:
+            factory_class: org.hibernate.cache.jcache.internal.JCacheRegionFactory
+          use_query_cache: false
+          use_second_level_cache: false
+        default_batch_fetch_size: 0
+        enable_lazy_load_no_trans: false
+        format_sql: false
+        generate_statistics: true
+        globally_quoted_identifiers: true
+        javax:
+          cache:
+            missing_cache_strategy: fail
+            provider: org.ehcache.jsr107.EhcacheCachingProvider
+            uri: ehcache.xml
+        jdbc:
+          batch_size: 0
+        jpa:
+          compliance:
+            query: false
+        max_fetch_depth: 1
+        order_inserts: false
+        order_updates: false
+        query:
+          fail_on_pagination_over_collection_fetch: true
+          in_clause_parameter_padding: true
+        session:
+          events:
+            log:
+              LOG_QUERIES_SLOWER_THAN_MS: '100'
+        show_sql: false
+  liquibase:
+    enabled: true
+  main:
+    banner-mode: off
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  output:
+    ansi:
+      enabled: always
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  session:
+    jdbc:
+      initialize-schema: never
+  sql:
+    init:
+      mode: never
+  thymeleaf:
+    cache: false
+    template-resolver-order: 0 # default HTML template resolver has priority over custom resolvers
+  web:
+    error:
+      include-exception: true
+      include-message: always
+      include-stacktrace: always
+  threads:
+    virtual:
+      enabled: true
+springdoc:
+  api-docs:
+    path: /api-docs
+  cache:
+    disabled: true
+  packagesToScan: com.hamza
+  pathsToMatch: /**
+  swagger-ui:
+    disable-swagger-default-url: true
+    doc-expansion: none
+    operationsSorter: method
+    path: /swagger-ui
+    tagsSorter: alpha
+---
+# url: jdbc:h2:tcp://localhost:PORT/mem:thymx
+custom:
+  h2:
+    port: 9092
+spring:
+  config:
+    activate:
+      on-profile: h2
+  datasource:
+    driverClassName: org.h2.Driver
+    password: sa
+    url: jdbc:h2:mem:thymx
+    username: sa
+  docker:
+    compose:
+      enabled: false
+  h2:
+    console:
+      enabled: true
+      path: /h2
+      settings:
+        web-allow-others: true
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  liquibase:
+    enabled: false
+  session:
+    jdbc:
+      initialize-schema: always
+---
+custom:
+  filters:
+    nonce:
+      exclude:
+        - /swagger-ui
+      include:
+        - /*
+  pg:
+    host: postgres
+server:
+  compression:
+    enabled: false
+  port: 80
+spring:
+  config:
+    activate:
+      on-profile: docker
+  devtools:
+    add-properties: false
+    livereload:
+      enabled: false
+    restart:
+      enabled: false
+  docker:
+    compose:
+      enabled: false
+---
+logging:
+  level:
+    org.hibernate:
+      SQL: off
+      stat: off
+    root: error
+management:
+  endpoint:
+    env:
+      show-values: when_authorized
+    health:
+      group:
+        readiness:
+          include: '*'
+      show-details: when_authorized
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+spring:
+  config:
+    activate:
+      on-profile: preprod
+  jpa:
+    properties:
+      hibernate:
+        cache:
+          use_query_cache: true
+          use_second_level_cache: true
+        default_batch_fetch_size: 32
+        generate_statistics: false
+        jdbc:
+          batch_size: 32
+        order_inserts: true
+        order_updates: true
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

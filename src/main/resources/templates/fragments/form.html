@@ -1,0 +1,127 @@
+<!--/*@thymesVar id="hint" type="kotlin.String"*/-->
+<!--/*@thymesVar id="err" type="org.thymeleaf.spring6.util.DetailedError"*/-->
+<!--/*@thymesVar id="selectPop" type="com.hamza.thymx.web.SelectPopulator"*/-->
+<!--/*@thymesVar id="radioPop" type="com.hamza.thymx.web.RadioPopulator"*/-->
+<!--/*@thymesVar id="radio" type="com.hamza.thymx.web.Radio"*/-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div
+      class="validator-hint hidden"
+      th:fragment="validator_hint(text)"
+      th:if="${text}"
+      th:text="#{${text}}"></div>
+
+    <div
+      class="text-error"
+      th:fragment="error_messages(field)"
+      th:if="${#fields.hasErrors(field)}"
+      th:text="${#strings.listJoin(#fields.errors(field), ', ')}"></div>
+
+    <label
+      class="floating-label"
+      th:fragment="floating_flatpicker(name, text)">
+      <span th:text="#{${text}}"></span>
+      <input
+        th:replace="~{fragments/input :: flatpicker(
+          name=${name},
+          placeholder=${text}
+          )}" />
+      <div th:replace="~{:: validator_hint(${hint})}"></div>
+      <div th:replace="~{:: error_messages(${name})}"></div>
+    </label>
+
+    <label
+      class="floating-label"
+      th:fragment="floating_input(name, text, type)">
+      <span th:text="#{${text}}"></span>
+      <input
+        th:replace="~{fragments/input :: _input(
+          name=${name},
+          text=${text},
+          type=${type}
+          )}" />
+      <div th:replace="~{:: validator_hint(${hint})}"></div>
+      <div th:replace="~{:: error_messages(${name})}"></div>
+    </label>
+
+    <label
+      class="floating-label"
+      th:fragment="floating_select(name, text, selectPop)">
+      <span th:text="#{${text}}"></span>
+      <select
+        th:replace="~{fragments/input :: _select(
+          name=${name},
+          selects=${selectPop.selects}
+          )}"></select>
+      <div th:replace="~{:: validator_hint(${hint})}"></div>
+      <div th:replace="~{:: error_messages(${name})}"></div>
+    </label>
+
+    <div
+      class="alert alert-vertical sm:alert-horizontal alert-error"
+      th:fragment="form_errors_alert"
+      th:if="${#fields.hasErrors()}"
+      role="alert"
+      x-data="alert">
+      <svg th:replace="~{x-circle}"></svg>
+      <div>
+        <h3
+          class="font-bold"
+          th:text="#{form.errors.title(${#fields.errors().size()})}"></h3>
+        <div class="text-xs">
+          <ul>
+            <li
+              th:each="err, iter : ${#lists.sort(#fields.detailedErrors(), new com.hamza.thymx.shared.DetailedErrorComparator())}"
+              th:text="|${err.fieldName}: ${err.message}|"></li>
+          </ul>
+        </div>
+      </div>
+      <button th:replace="~{fragments/alert :: close_button}"></button>
+    </div>
+
+    <label
+      class="label"
+      th:fragment="labeled_checkbox(text, name)">
+      <input th:replace="~{fragments/input :: _checkbox(${name})}" />
+      [[#{${text}}]]
+    </label>
+
+    <div
+      class="space-x-4"
+      th:fragment="labeled_radio(text, name, radioPop)">
+      <label
+        class="label"
+        th:text="#{${text}}"></label>
+      <div class="join space-x-4">
+        <div
+          class="join-item"
+          th:each="radio: ${radioPop.radios}">
+          <th:block
+            th:replace="~{fragments/input :: _radio(
+              name=${name},
+              value=${radio.value},
+              text=${radio.text}
+              )}"></th:block>
+        </div>
+      </div>
+    </div>
+
+    <fieldset
+      class="fieldset"
+      th:fragment="file_input(legend, name, label)">
+      <legend
+        class="fieldset-legend"
+        th:text="#{${legend}}"></legend>
+      <input
+        class="file-input"
+        th:field="*{__${name}__}"
+        type="file" />
+      <label
+        class="label"
+        th:text="#{${label}}"></label>
+      <div th:replace="~{:: validator_hint(${hint})}"></div>
+      <div th:replace="~{:: error_messages(${name})}"></div>
+    </fieldset>
+  </body>
+</html>

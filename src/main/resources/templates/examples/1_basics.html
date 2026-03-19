@@ -1,0 +1,81 @@
+<!doctype html>
+<html
+  layout:decorate="~{layouts/content_page}"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:th="http://www.thymeleaf.org"
+  th:with="activeMenu='basics'">
+  <head>
+    <title>basics</title>
+  </head>
+  <body>
+    <div layout:fragment="content">
+      <h1 th:text="#{nav.title}"></h1>
+      <div class="divider"></div>
+      <div th:text="|Sum of 2 + 2 = ${ 2 + 2 }|"></div>
+      <div class="divider"></div>
+      <div>
+        <ul>
+          <li th:each="el : ${elements}">
+            <span th:text="${el}">blabla</span>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <ul>
+          <li
+            th:each="el : ${elements}"
+            th:text="${el}"></li>
+        </ul>
+      </div>
+      <div class="divider"></div>
+      <div th:text="${elements[0]}"></div>
+      <div class="divider"></div>
+      <div th:text="${map.MA}"></div>
+      <div th:text="${map[US]}"></div>
+      <div th:text="${map['FR']}"></div>
+      <div class="divider"></div>
+      <div th:text="${user.getId()}"></div>
+      <div th:text="${user.name}"></div>
+      <div th:text="*{user.name}"></div>
+      <div class="divider"></div>
+      <div th:object="${user}">
+        <p>id: <span th:text="*{id}"></span></p>
+        <p>name: <span th:text="*{name}"></span></p>
+      </div>
+      <div class="divider"></div>
+      <div>
+        <a th:href="@{https://www.google.com/search?q=thymeleaf}">absolute</a>
+      </div>
+      <div>
+        <a th:href="@{https://www.google.com/search(q=${searchTerm})}">or</a>
+      </div>
+      <div th:object="${user}">
+        <a th:href="@{/user/{toto}/edit(toto=*{name})}">or</a>
+      </div>
+      <div>
+        <a th:href="@{/}">relative</a>
+      </div>
+      <div class="divider"></div>
+      <div th:text="'hello ' + ${user.name}"></div>
+      <div th:text="|hello ${user.name}|"></div>
+      <!-- th:text completely replaces -->
+      <div th:text="|${user.name}|">hello</div>
+      <div>hello [[${user.name}]]</div>
+      <div class="divider"></div>
+      <!-- if: condition is true -->
+      <div
+        class="toto"
+        th:classappend="${!user.isToto} ? 'yes': 'no'"
+        th:if="${user.isToto}">
+        toto!
+      </div>
+      <!-- else: condition is false -->
+      <div th:unless="${user.isToto}">not toto!</div>
+      <div class="divider"></div>
+      <h1 th:text="#{__${preproc}__}"></h1>
+      <!-- FIXME: is it same -->
+      <h1 th:text="#{${preproc}}"></h1>
+      <div class="divider"></div>
+    </div>
+  </body>
+</html>

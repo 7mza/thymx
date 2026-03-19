@@ -1,0 +1,14 @@
+<!doctype html>
+<html
+  layout:decorate="~{layouts/auth_page}"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title th:text="#{login}"></title>
+  </head>
+  <body>
+    <div layout:fragment="content">
+      <fieldset th:replace="~{fragments/auth :: login}"></fieldset>
+    </div>
+  </body>
+</html>

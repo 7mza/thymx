@@ -1,0 +1,55 @@
+<!--/*@thymesVar id="authenticationFacade" type="com.hamza.thymx.auth.IAuthenticationFacade"*/-->
+<!doctype html>
+<html
+  layout:decorate="~{layouts/content_page}"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+  xmlns:th="http://www.thymeleaf.org"
+  th:with="activeMenuItem='index'">
+  <head>
+    <title th:text="#{nav.home}"></title>
+  </head>
+  <body>
+    <div layout:fragment="content">
+      <div class="space-y-4">
+        <div
+          th:replace="~{fragments/alert :: alert(
+            additionalClasses='alert-info',
+            svg='exclamation-circle',
+            title='Principal',
+            text=${authenticationFacade.getAuthentication},
+            duration=''
+            )}"></div>
+        <div
+          class="alert alert-vertical sm:alert-horizontal alert-warning"
+          role="alert"
+          x-data="alert">
+          <svg th:replace="~{exclamation-circle}"></svg>
+          <div>
+            <h3 class="font-bold">sec:authentication="name"</h3>
+            <div
+              class="text-xs"
+              sec:authentication="name"></div>
+          </div>
+          <button th:replace="~{fragments/alert :: close_button}"></button>
+        </div>
+        <div
+          class="alert alert-vertical sm:alert-horizontal alert-warning"
+          sec:authorize="isAuthenticated()"
+          role="alert"
+          x-data="alert">
+          <svg th:replace="~{exclamation-circle}"></svg>
+          <div>
+            <h3 class="font-bold">
+              sec:authentication="principal.authorities"
+            </h3>
+            <div
+              class="text-xs"
+              sec:authentication="principal.authorities"></div>
+          </div>
+          <button th:replace="~{fragments/alert :: close_button}"></button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

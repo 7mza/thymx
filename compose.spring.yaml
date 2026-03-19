@@ -1,0 +1,7 @@
+services:
+  postgres:
+    extends:
+      file: compose.yaml
+      service: postgres
+    profiles:
+      - postgres

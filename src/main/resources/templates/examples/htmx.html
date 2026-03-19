@@ -1,0 +1,19 @@
+<!--/*@thymesVar id="value" type="kotlin.Int"*/-->
+<!doctype html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div th:fragment="hello">hello</div>
+
+    <progress
+      class="progress progress-primary w-56"
+      th:fragment="progress"
+      th:hx-get="@{/htmx/web/progress}"
+      hx-swap="outerHTML"
+      hx-target="this"
+      hx-trigger="load delay:1s"
+      max="100"
+      th:value="${value}"></progress>
+  </body>
+</html>

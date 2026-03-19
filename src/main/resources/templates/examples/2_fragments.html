@@ -1,0 +1,33 @@
+<!doctype html>
+<html
+  layout:decorate="~{layouts/content_page}"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:th="http://www.thymeleaf.org"
+  th:with="text='basics', activeMenu='fragments'">
+  <head>
+    <title>fragments</title>
+  </head>
+  <body>
+    <div layout:fragment="content">
+      <div
+        th:insert="~{examples/link :: link_with_snippet(
+          href='https://www.google.com/',
+          text='google',
+          snippet=~{:: #snippet}
+          )}">
+        <i
+          class="bi bi-hand-thumbs-up"
+          id="snippet"></i>
+      </div>
+      <div
+        th:replace="~{examples/link :: link(
+          text='basics',
+          href='/basics'
+          )}"></div>
+      <div th:replace="~{examples/link :: link_th_with('/basics')}"></div>
+      <div>
+        <svg th:replace="~{hand-thumbs-up-fill}"></svg>
+      </div>
+    </div>
+  </body>
+</html>

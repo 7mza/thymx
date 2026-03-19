@@ -1,0 +1,88 @@
+<!--/*@thymesVar id="login" type="com.hamza.thymx.auth.LoginDto"*/-->
+<!--/*@thymesVar id="dir" type="kotlin.String"*/-->
+<!doctype html>
+<html
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+  xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <fieldset
+      class="fieldset bg-base-200 border-base-300 rounded-box w-full max-w-md border p-4"
+      th:fragment="login">
+      <form
+        class="w-full space-y-4"
+        th:action="@{/login}"
+        method="post"
+        th:object="${login}">
+        <legend
+          class="fieldset-legend"
+          th:text="#{login}"></legend>
+        <th:block th:if="${param.error}">
+          <div
+            th:replace="~{fragments/alert :: alert(
+              additionalClasses='alert-error',
+              svg='x-circle',
+              title=#{ui.error},
+              text=#{BadCredentials},
+              duration=''
+              )}"></div>
+        </th:block>
+        <th:block th:if="${param.logout}">
+          <div
+            th:replace="~{fragments/alert :: alert(
+              additionalClasses='alert-success',
+              svg='check-circle',
+              title=#{logout},
+              text=#{logout.success},
+              duration=''
+              )}"></div>
+        </th:block>
+        <label
+          th:replace="~{fragments/form :: floating_input(
+            name='username',
+            text='login.username',
+            type='email',
+            hint='validation.email'
+            )}"></label>
+        <label
+          th:replace="~{fragments/form :: floating_input(
+            name='password',
+            text='login.password',
+            type='text',
+            hint='validation.password',
+            minlength=8
+            )}"></label>
+        <button
+          th:replace="~{fragments/input :: _button(
+            text='form.submit',
+            color='btn-primary w-full',
+            type='submit'
+            )}"></button>
+      </form>
+    </fieldset>
+
+    <fieldset
+      class="fieldset bg-base-200 border-base-300 rounded-box w-full max-w-md border p-4"
+      sec:authorize="isAuthenticated()"
+      th:fragment="logout">
+      <form
+        class="w-full space-y-4"
+        th:action="@{/logout}"
+        method="post">
+        <legend
+          class="fieldset-legend"
+          th:text="#{logout.confirm}"></legend>
+        <button
+          class="btn sm:btn-sm md:btn-md btn-error w-full"
+          type="submit">
+          <th:block th:if="${dir == 'ltr'}">
+            <svg th:replace="~{arrow-left-start-on-rectangle}"></svg>
+          </th:block>
+          <th:block th:unless="${dir == 'ltr'}">
+            <svg th:replace="~{arrow-right-start-on-rectangle}"></svg>
+          </th:block>
+          [[#{logout}]]
+        </button>
+      </form>
+    </fieldset>
+  </body>
+</html>

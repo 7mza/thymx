@@ -1,0 +1,141 @@
+<!--/*@thymesVar id="page" type="com.hamza.thymx.shared.PageMeta"*/-->
+<!--/*@thymesVar id="nvHelper" type="com.hamza.thymx.web.NavigationHelper"*/-->
+<!--/*@thymesVar id="pgHelper" type="com.hamza.thymx.web.PaginationHelper"*/-->
+<!--/*@thymesVar id="hideOnMobile" type="kotlin.Boolean"*/-->
+<!--/*@thymesVar id="additionalClasses" type="kotlin.String"*/-->
+<!--/*@thymesVar id="summary" type="com.hamza.thymx.web.PageSummary"*/-->
+<!--/*@thymesVar id="pageSizesPop" type="com.hamza.thymx.web.PaginationSizesPopulator"*/-->
+<!--/*@thymesVar id="size" type="kotlin.Int"*/-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <th
+      th:classappend="${hideOnMobile} ? 'hidden sm:table-cell'"
+      th:fragment="t_th(key)"
+      th:text="#{${key}}"></th>
+
+    <th
+      th:classappend="${hideOnMobile} ? 'hidden sm:table-cell'"
+      th:fragment="t_th_sorted(key, field, sort)">
+      <div class="join join-horizontal items-center space-x-2">
+        <div
+          class="join-item"
+          th:text="#{${key}}"></div>
+        <div class="join-item">
+          <label
+            class="swap swap-rotate pointer-events-none"
+            th:with="isFieldInSort=${nvHelper.isFieldInSort(sort, field)}">
+            <input
+              th:checked="${nvHelper.getFieldDirectionFromSort(sort, field)}"
+              th:if="${isFieldInSort}"
+              type="checkbox" />
+            <input
+              type="checkbox"
+              th:unless="${isFieldInSort}"
+              x-data
+              x-indeterminate />
+            <a
+              class="swap-on pointer-events-auto"
+              th:href="${nvHelper.replaceQueryParams({'sort' : field + ',ASC', 'page': 0})}">
+              <svg th:replace="~{chevron-up}"></svg>
+            </a>
+            <a
+              class="swap-off pointer-events-auto"
+              th:href="${nvHelper.replaceQueryParams({'sort': field + ',DESC', 'page': 0})}">
+              <svg th:replace="~{chevron-down}"></svg>
+            </a>
+            <div class="swap-indeterminate">
+              <svg th:replace="~{minus}"></svg>
+            </div>
+          </label>
+        </div>
+      </div>
+    </th>
+
+    <td
+      th:classappend="${hideOnMobile} ? 'hidden sm:table-cell'"
+      th:fragment="t_td(value)"
+      th:text="${value}"></td>
+
+    <td
+      th:classappend="${hideOnMobile} ? 'hidden sm:table-cell'"
+      th:fragment="t_td_href(href, svg)">
+      <a
+        class="text-base-content transition-colors"
+        th:classappend="${additionalClasses}"
+        th:href="${href}">
+        <svg th:replace="~{${svg}}"></svg>
+      </a>
+    </td>
+
+    <div
+      class="dropdown dropdown-top dropdown-end"
+      th:fragment="size_selector(pageSizesPop)">
+      <div
+        class="btn m-1"
+        role="button"
+        tabindex="0">
+        <svg th:replace="~{square-3-stack-3d}"></svg>
+        [[#{ui.pagination.size}]]
+      </div>
+      <ul
+        class="menu dropdown-content bg-base-300 rounded-box z-100 w-auto p-2 shadow-sm"
+        tabindex="-1">
+        <th:block th:each="size : ${pageSizesPop.sizes}">
+          <li
+            class="w-auto"
+            th:classappend="${pgHelper.isPageSizeSelected(size)} ? 'menu-active'">
+            <a
+              th:href="${nvHelper.replaceQueryParams({'size' : size, 'page': 0})}"
+              th:text="${size}">
+            </a>
+          </li>
+        </th:block>
+      </ul>
+    </div>
+
+    <p
+      class="mr-3 text-sm text-gray-500"
+      th:fragment="elements_summary(summary)"
+      th:utext="${#messages.msg('ui.pagination.summary.elements', summary.currentElements, summary.totalElements)}"></p>
+
+    <p
+      class="mr-3 text-sm text-gray-500"
+      th:fragment="page_summary(summary)"
+      th:utext="${#messages.msg('ui.pagination.summary.page', summary.currentPage, summary.totalPages)}"></p>
+
+    <div
+      class="flex justify-center pt-2"
+      th:fragment="pagination(page)"
+      th:with="summary=${pgHelper.getPageSummary(page)}">
+      <div class="hidden items-center space-x-4 sm:flex">
+        <div th:replace="~{:: size_selector(${pageSizesPop})}"></div>
+        <p th:replace="~{:: elements_summary(${summary})}"></p>
+        <div class="join">
+          <a
+            class="join-item btn sm:btn-sm md:btn-md w-auto"
+            th:classappend="${n == page.number} ? 'btn-active'"
+            th:each="n : ${pgHelper.getRange(page, 3)}"
+            th:href="${nvHelper.replaceQueryParam('page', n)}"
+            th:text="${n + 1}"></a>
+        </div>
+        <p th:replace="~{:: page_summary(${summary})}"></p>
+      </div>
+      <div class="flex items-center space-x-4 sm:hidden">
+        <p th:replace="~{:: elements_summary(${summary})}"></p>
+        <div class="join">
+          <a
+            class="join-item btn sm:btn-sm md:btn-md w-auto"
+            th:disabled="${page.isFirst}"
+            th:href="${page.isFirst} ? '#' : ${nvHelper.replaceQueryParam('page', page.number - 1)}"
+            th:text="#{ui.pagination.previous}"></a>
+          <a
+            class="join-item btn sm:btn-sm md:btn-md w-auto"
+            th:disabled="${page.isLast}"
+            th:href="${page.isLast} ? '#' : ${nvHelper.replaceQueryParam('page', page.number + 1)}"
+            th:text="#{ui.pagination.next}"></a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

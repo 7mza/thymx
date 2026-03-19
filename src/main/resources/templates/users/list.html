@@ -1,0 +1,150 @@
+<!--/*@thymesVar id="users" type="com.hamza.thymx.shared.PageDto"*/-->
+<!--/*@thymesVar id="user" type="com.hamza.thymx.users.UserDto"*/-->
+<!--/*@thymesVar id="hideOnMobile" type="kotlin.Boolean"*/-->
+<!--/*@thymesVar id="flash" type="com.hamza.thymx.web.FlashPopulator"*/-->
+<!doctype html>
+<html
+  layout:decorate="~{layouts/content_page}"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+  xmlns:th="http://www.thymeleaf.org"
+  th:with="activeMenu='users'">
+  <head>
+    <title th:text="#{users}"></title>
+  </head>
+  <body>
+    <div layout:fragment="content">
+      <dialog
+        th:replace="~{fragments/modal :: delete_modal(
+          title='ui.deletion',
+          text='ui.deletion.proceed',
+          baseUrl='/users/delete/'
+          )}"></dialog>
+      <th:block th:with="page=${users.page}">
+        <div class="space-y-4 overflow-x-auto">
+          <div class="flex flex-row justify-between">
+            <span></span>
+            <a
+              sec:authorize="hasAuthority('ROLE_admin')"
+              th:replace="~{fragments/input :: _a_btn_svg(
+                text='user.create',
+                href='/users/create',
+                additionalClasses='btn-primary',
+                svg='plus-circle'
+                )}"></a>
+          </div>
+          <th:block th:if="${flash}">
+            <div
+              th:replace="~{fragments/alert :: flash_alert(
+                flash=${flash},
+                duration=10
+                )}"></div>
+          </th:block>
+          <table class="table-xs table-hover md:table-sm table">
+            <thead>
+              <tr>
+                <th></th>
+                <th
+                  th:replace="~{fragments/table :: t_th_sorted(
+                    key='user.name',
+                    field='username',
+                    sort=${users.sort}
+                    )}"></th>
+                <th
+                  th:replace="~{fragments/table :: t_th_sorted(
+                    key='user.gender',
+                    field='gender',
+                    sort=${users.sort},
+                    hideOnMobile=true
+                    )}"></th>
+                <th
+                  th:replace="~{fragments/table :: t_th_sorted(
+                    key='user.birthday',
+                    field='birthday',
+                    sort=${users.sort},
+                    hideOnMobile=true
+                    )}"></th>
+                <th
+                  th:replace="~{fragments/table :: t_th_sorted(
+                    key='user.email',
+                    field='email',
+                    sort=${users.sort},
+                    hideOnMobile=true
+                    )}"></th>
+                <th
+                  th:replace="~{fragments/table :: t_th_sorted(
+                    key='user.phoneNumber',
+                    field='phoneNumber',
+                    sort=${users.sort},
+                    hideOnMobile=true
+                    )}"></th>
+                <th
+                  th:replace="~{fragments/table :: t_th_sorted(
+                    key='user.group',
+                    field='group.name',
+                    sort=${users.sort},
+                    hideOnMobile=true
+                    )}"></th>
+                <th
+                  sec:authorize="hasAuthority('ROLE_admin')"
+                  th:replace="~{fragments/table :: t_th('ui.edit')}"></th>
+                <th
+                  sec:authorize="hasAuthority('ROLE_admin')"
+                  th:replace="~{fragments/table :: t_th('ui.delete')}"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="user, iter : ${users.content}">
+                <td th:text="${iter.count + (page.number * page.size)}"></td>
+                <td
+                  th:replace="~{fragments/table :: t_td(${user.fullName})}"></td>
+                <td
+                  th:replace="~{fragments/table :: t_td(
+                    value=${user.gender.name},
+                    hideOnMobile=true
+                    )}"></td>
+                <td
+                  th:replace="~{fragments/table :: t_td(
+                    value=${user.birthday},
+                    hideOnMobile=true
+                    )}"></td>
+                <td
+                  th:replace="~{fragments/table :: t_td(
+                    value=${user.email},
+                    hideOnMobile=true
+                    )}"></td>
+                <td
+                  th:replace="~{fragments/table :: t_td(
+                    value=${user.phoneNumber},
+                    hideOnMobile=true
+                    )}"></td>
+                <td
+                  th:replace="~{fragments/table :: t_td(
+                    value=${user.group?.name},
+                    hideOnMobile=true
+                    )}"></td>
+                <td
+                  sec:authorize="hasAuthority('ROLE_admin')"
+                  th:replace="~{fragments/table :: t_td_href(
+                    href=|/users/update/${user.id}|,
+                    svg='pencil-square',
+                    additionalClasses='hover:text-warning'
+                    )}"></td>
+                <td
+                  sec:authorize="hasAuthority('ROLE_admin')"
+                  th:replace="~{fragments/modal :: delete_modal_td(
+                    id=${user.id},
+                    details=${user.fullName},
+                    href='#',
+                    svg='trash',
+                    additionalClasses='hover:text-error'
+                    )}"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div th:replace="~{fragments/table :: pagination(${page})}"></div>
+      </th:block>
+    </div>
+  </body>
+</html>

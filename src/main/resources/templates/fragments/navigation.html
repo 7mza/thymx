@@ -1,0 +1,263 @@
+<!--/*@thymesVar id="navbarPop" type="com.hamza.thymx.web.NavbarPopulator"*/-->
+<!--/*@thymesVar id="menu" type="com.hamza.thymx.web.NavbarMenu"*/-->
+<!--/*@thymesVar id="activeMenu" type="kotlin.String"*/-->
+<!--/*@thymesVar id="nvHelper" type="com.hamza.thymx.web.NavigationHelper"*/-->
+<!--/*@thymesVar id="langPop" type="com.hamza.thymx.web.LanguagesPopulator"*/-->
+<!--/*@thymesVar id="dir" type="kotlin.String"*/-->
+<!--/*@thymesVar id="lang" type="kotlin.String"*/-->
+<!--/*@thymesVar id="authenticationFacade" type="com.hamza.thymx.auth.IAuthenticationFacade"*/-->
+<!--/*@thymesVar id="additionalClasses" type="kotlin.String"*/-->
+<!doctype html>
+<html
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+  xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div
+      class="navbar bg-base-200 shadow-sm"
+      th:fragment="navbar(navbarPop)">
+      <div class="navbar-start">
+        <div class="dropdown">
+          <div
+            class="btn btn-ghost lg:hidden"
+            role="button"
+            tabindex="0">
+            <svg th:replace="~{bars3}"></svg>
+          </div>
+          <ul
+            class="menu menu-sm dropdown-content bg-base-300 rounded-box z-100 mt-3 w-auto p-2 shadow"
+            tabindex="-1">
+            <th:block th:each="menu : ${navbarPop.menus}">
+              <li th:if="${#lists.isEmpty(menu.subMenus)}">
+                <a
+                  th:classappend="${activeMenu == menu.activeFlag} ? 'menu-active'"
+                  th:href="${menu.href}"
+                  th:text="#{${menu.name}}"></a>
+              </li>
+              <li
+                th:unless="${#lists.isEmpty(menu.subMenus)}"
+                x-data="{ hasActiveChild: false }"
+                x-init="hasActiveChild = $el.querySelector('.menu-active') !== null">
+                <a
+                  :class="{ 'menu-active': hasActiveChild }"
+                  th:text="#{${menu.name}}"></a>
+                <ul class="p-2">
+                  <li th:each="submenu: ${menu.subMenus}">
+                    <a
+                      th:classappend="${activeMenu == submenu.activeFlag} ? 'menu-active'"
+                      th:href="${submenu.href}"
+                      th:text="#{${submenu.name}}"></a>
+                  </li>
+                </ul>
+              </li>
+            </th:block>
+          </ul>
+        </div>
+        <a
+          class="btn btn-ghost text-xl"
+          th:href="@{/}"
+          th:text="#{nav.title}"></a>
+      </div>
+      <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal px-1">
+          <th:block th:each="menu : ${navbarPop.menus}">
+            <li th:if="${#lists.isEmpty(menu.subMenus)}">
+              <a
+                th:classappend="${activeMenu == menu.activeFlag} ? 'menu-active'"
+                th:href="${menu.href}"
+                th:if="${menu.authority}"
+                th:sec:authorize="|hasAuthority('${menu.authority}')|"
+                th:text="#{${menu.name}}"></a>
+              <a
+                th:classappend="${activeMenu == menu.activeFlag} ? 'menu-active'"
+                th:href="${menu.href}"
+                th:text="#{${menu.name}}"
+                th:unless="${menu.authority}"></a>
+            </li>
+            <li
+              th:unless="${#lists.isEmpty(menu.subMenus)}"
+              x-data="{ hasActiveChild: false }"
+              x-init="hasActiveChild = $el.querySelector('.menu-active') !== null">
+              <details
+                @click.outside="$el.removeAttribute('open')"
+                @keydown.escape.window="$el.removeAttribute('open')">
+                <summary
+                  :class="{ 'menu-active': hasActiveChild }"
+                  th:text="#{${menu.name}}"></summary>
+                <ul class="bg-base-300 z-100 w-auto p-2">
+                  <li th:each="submenu: ${menu.subMenus}">
+                    <a
+                      th:classappend="${activeMenu == submenu.activeFlag} ? 'menu-active'"
+                      th:href="${submenu.href}"
+                      th:if="${submenu.authority}"
+                      th:sec:authorize="|hasAuthority('${submenu.authority}')|"
+                      th:text="#{${submenu.name}}"></a>
+                    <a
+                      th:classappend="${activeMenu == submenu.activeFlag} ? 'menu-active'"
+                      th:href="${submenu.href}"
+                      th:text="#{${submenu.name}}"
+                      th:unless="${submenu.authority}"></a>
+                  </li>
+                </ul>
+              </details>
+            </li>
+          </th:block>
+        </ul>
+      </div>
+      <div class="navbar-end space-x-2">
+        <a th:replace="~{:: login_btn}"></a>
+        <div th:replace="~{:: profile}"></div>
+      </div>
+    </div>
+
+    <label
+      class="swap swap-rotate"
+      th:fragment="theme_ctrl(theme)"
+      x-data>
+      <input
+        class="theme-controller"
+        :checked="$store.theme.value === 'dark'"
+        @change="$store.theme.toggle()"
+        type="checkbox"
+        th:value="${theme}" />
+      <svg th:replace="~{sun}"></svg>
+      <svg th:replace="~{moon}"></svg>
+    </label>
+
+    <div
+      class="dropdown dropdown-top dropdown-end"
+      th:fragment="language_selector(langPop)">
+      <div
+        class="btn m-1"
+        role="button"
+        tabindex="0">
+        <svg th:replace="~{language}"></svg>
+        [[#{nav.language}]]
+      </div>
+      <ul
+        class="menu dropdown-content bg-base-300 rounded-box z-100 w-auto p-2 shadow-sm"
+        tabindex="-1">
+        <th:block th:each="lang : ${langPop.languages}">
+          <li
+            class="w-auto"
+            th:classappend="${#locale.language == lang} ? 'menu-active'">
+            <a
+              th:href="${nvHelper.replaceQueryParam('lang', lang)}"
+              th:text="#{${'nav.language.' + lang}}">
+            </a>
+          </li>
+        </th:block>
+      </ul>
+    </div>
+
+    <a
+      class="btn btn-xs w-auto"
+      th:classappend="${additionalClasses}"
+      th:fragment="footer_link(href, text)"
+      th:href="${href}"
+      rel="noopener noreferrer"
+      target="_blank"
+      th:text="${text}">
+    </a>
+
+    <footer
+      class="footer sm:footer-horizontal bg-base-200 text-base-content items-center justify-center p-2 sm:justify-between"
+      dir="ltr"
+      th:fragment="footer">
+      <nav class="hidden md:block"></nav>
+      <nav>
+        <div th:text="#{nav.title}"></div>
+        <div
+          th:dir="${dir}"
+          th:text="${#temporals.format(#temporals.createNow())}"></div>
+        <div class="join items-center space-x-2">
+          <div class="join-item">
+            <a
+              th:replace="~{:: footer_link(
+                href='/actuator',
+                text='actuator',
+                additionalClasses='btn-success'
+                )}"></a>
+          </div>
+          <div class="join-item">
+            <a
+              th:replace="~{:: footer_link(
+                href='/swagger-ui',
+                text='swaggerUI',
+                additionalClasses='btn-neutral'
+                )}"></a>
+          </div>
+          <div class="join-item">
+            <a
+              th:replace="~{:: footer_link(
+                href='https://daisyui.com/components/',
+                text='daisyUI',
+                additionalClasses='btn-warning'
+                )}"></a>
+          </div>
+        </div>
+      </nav>
+      <nav class="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
+        <label th:replace="~{:: theme_ctrl('dark')}"></label>
+        <div th:replace="~{:: language_selector(${langPop})}"></div>
+      </nav>
+      <nav class="hidden md:block"></nav>
+    </footer>
+
+    <a
+      class="btn sm:btn-sm md:btn-md btn-primary w-auto"
+      sec:authorize="isAnonymous()"
+      th:fragment="login_btn"
+      th:href="@{/login}">
+      <th:block th:if="${dir == 'ltr'}">
+        <svg th:replace="~{arrow-left-end-on-rectangle}"></svg>
+      </th:block>
+      <th:block th:unless="${dir == 'ltr'}">
+        <svg th:replace="~{arrow-right-end-on-rectangle}"></svg>
+      </th:block>
+      [[#{login}]]
+    </a>
+
+    <div
+      class="dropdown dropdown-end"
+      sec:authorize="isAuthenticated()"
+      th:fragment="profile">
+      <div
+        class="link"
+        role="button"
+        tabindex="0">
+        <div class="avatar">
+          <div class="w-12 rounded-full">
+            <img
+              alt="profile avatar"
+              th:src="@{/img/superperson.webp}" />
+          </div>
+        </div>
+      </div>
+      <ul
+        class="menu dropdown-content bg-base-300 rounded-box z-100 w-auto space-y-2 p-2 shadow-sm"
+        tabindex="-1">
+        <li class="w-auto">
+          <a
+            class="btn sm:btn-sm md:btn-md w-auto"
+            th:href="@{#}">
+            <svg th:replace="~{cog-6-tooth}"></svg>
+            [[${authenticationFacade.authentication.name}]]
+          </a>
+        </li>
+        <li class="w-auto">
+          <a
+            class="btn sm:btn-sm md:btn-md btn-error w-auto"
+            th:href="@{/logout}">
+            <th:block th:if="${dir == 'ltr'}">
+              <svg th:replace="~{arrow-left-start-on-rectangle}"></svg>
+            </th:block>
+            <th:block th:unless="${dir == 'ltr'}">
+              <svg th:replace="~{arrow-right-start-on-rectangle}"></svg>
+            </th:block>
+            [[#{logout}]]
+          </a>
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>

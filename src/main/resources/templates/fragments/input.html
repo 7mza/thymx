@@ -1,0 +1,147 @@
+<!--/*@thymesVar id="select" type="com.hamza.thymx.web.Select"*/-->
+<!--/*@thymesVar id="isRequired" type="kotlin.Boolean"*/-->
+<!--/*@thymesVar id="isSelected" type="kotlin.Boolean"*/-->
+<!--/*@thymesVar id="multiple" type="kotlin.Boolean"*/-->
+<!--/*@thymesVar id="max" type="kotlin.Int"*/-->
+<!--/*@thymesVar id="maxlength" type="kotlin.Int"*/-->
+<!--/*@thymesVar id="min" type="kotlin.Int"*/-->
+<!--/*@thymesVar id="minlength" type="kotlin.Int"*/-->
+<!--/*@thymesVar id="pattern" type="kotlin.String"*/-->
+<!--/*@thymesVar id="title" type="kotlin.String"*/-->
+<!--/*@thymesVar id="value" type="kotlin.String"*/-->
+<!--/*@thymesVar id="additionalClasses" type="kotlin.String"*/-->
+<!--/*@thymesVar id="at_click" type="kotlin.String"*/-->
+<!--/*@thymesVar id="dir" type="kotlin.String"*/-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <input
+      th:fragment="csrf"
+      th:name="${_csrf.parameterName}"
+      type="hidden"
+      th:value="${_csrf.token}" />
+
+    <input
+      class="flatpickr flatpickr-input active input-md validator w-full"
+      th:id="${name}"
+      autocomplete="on"
+      th:data-locale="${#locale.language}"
+      th:field="*{__${name}__}"
+      th:fragment="flatpicker(name, placeholder)"
+      th:max="${max}"
+      th:min="${min}"
+      th:name="${name}"
+      th:placeholder="#{${placeholder}}"
+      th:required="${isRequired} ?: 'true'"
+      th:title="${title}"
+      type="text" />
+
+    <input
+      class="input input-md validator w-full"
+      th:id="${name}"
+      autocomplete="on"
+      th:field="*{__${name}__}"
+      th:fragment="_input(name, text, type)"
+      th:max="${max}"
+      th:maxlength="${maxlength}"
+      th:min="${min}"
+      th:minlength="${minlength}"
+      th:name="${name}"
+      th:pattern="${pattern}"
+      th:placeholder="#{${text}}"
+      th:required="${isRequired} ?: 'true'"
+      th:title="${title}"
+      th:type="${type}"
+      th:value="${value}" />
+
+    <input
+      th:field="*{__${name}__}"
+      th:fragment="_hidden_input(name)"
+      type="hidden" />
+
+    <th:block th:fragment="_radio(name, value, text)">
+      <input
+        class="radio"
+        th:id="|${name}-${value}|"
+        autocomplete="on"
+        th:field="*{__${name}__}"
+        th:name="${name}"
+        type="radio"
+        th:value="${value}" />
+      <label
+        th:for="|${name}-${value}|"
+        th:text="#{${text}}"></label>
+    </th:block>
+
+    <option
+      th:disabled="${isDisabled}"
+      th:fragment="_option(text, value, isDisabled)"
+      th:selected="${isSelected} ?: 'false'"
+      th:text="${#messages.msgOrNull(text) != null ? #messages.msg(text) : text}"
+      th:value="${value}"></option>
+
+    <select
+      class="select select-md validator w-full"
+      th:id="${name}"
+      th:field="*{__${name}__}"
+      th:fragment="_select(name, selects)"
+      th:multiple="${multiple}"
+      th:name="${name}"
+      th:required="${isRequired} ?: 'true'">
+      <th:block th:unless="${multiple}">
+        <option
+          th:replace="~{:: _option(
+            text='',
+            value=null,
+            isDisabled=false,
+            isSelected=true
+            )}"></option>
+      </th:block>
+      <th:block th:each="select : ${selects}">
+        <option
+          th:replace="~{:: _option(
+            text=${select.text},
+            value=${select.id},
+            isDisabled=false
+            )}"></option>
+      </th:block>
+    </select>
+
+    <button
+      class="btn sm:btn-sm md:btn-md w-auto"
+      th:@click="${at_click}"
+      th:classappend="${color}"
+      th:fragment="_button(text, color, type)"
+      th:text="#{${text}}"
+      th:type="${type}"></button>
+
+    <a
+      class="btn sm:btn-sm md:btn-md w-auto"
+      th:classappend="${additionalClasses}"
+      th:fragment="_a_btn_svg(text, href, svg)"
+      th:href="${href}">
+      <svg th:replace="~{${svg}}"></svg>
+      [[#{${text}}]]
+    </a>
+
+    <a
+      class="btn sm:btn-sm md:btn-md btn-secondary w-auto"
+      th:fragment="back_button(href)"
+      th:href="${href}">
+      <th:block th:if="${dir == 'ltr'}">
+        <svg th:replace="~{'arrow-uturn-left'}"></svg>
+      </th:block>
+      <th:block th:unless="${dir == 'ltr'}">
+        <svg th:replace="~{'arrow-uturn-right'}"></svg>
+      </th:block>
+      [[#{ui.back}]]
+    </a>
+
+    <input
+      class="checkbox"
+      th:classappend="${additionalClasses}"
+      th:field="*{__${name}__}"
+      th:fragment="_checkbox(name)"
+      type="checkbox" />
+  </body>
+</html>

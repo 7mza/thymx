@@ -1,0 +1,36 @@
+<!--/*@thymesVar id="nonce" type="kotlin.String"*/-->
+<!doctype html>
+<html
+  layout:decorate="~{layouts/content_page}"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:th="http://www.thymeleaf.org"
+  th:with="activeMenu='layouts'">
+  <head>
+    <title>layouts</title>
+    <meta
+      content="testing"
+      name="merge" />
+  </head>
+  <body>
+    <div layout:fragment="content">
+      <div>main content</div>
+      <!-- will work inside another fragment -->
+      <div
+        layout:replace="~{examples/parametrized :: parametrized(primary='True')}">
+        <div layout:fragment="message">[[${primary}]]</div>
+      </div>
+    </div>
+    <!-- will not work outside fragment -->
+    <div
+      layout:replace="~{examples/parametrized :: parametrized(primary='False')}">
+      <div layout:fragment="message">[[${primary}]]</div>
+    </div>
+  </body>
+  <th:block layout:fragment="scripts">
+    <script th:attr="nonce=${nonce}">
+      (function () {
+        console.log('ping from layout !');
+      })();
+    </script>
+  </th:block>
+</html>

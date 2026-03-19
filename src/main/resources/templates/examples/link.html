@@ -1,0 +1,18 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div th:fragment="link(href, text)">
+      <a
+        th:href="${href}"
+        th:text="${text}"></a>
+    </div>
+    <div th:fragment="link_th_with(href)">
+      <a
+        th:href="${href}"
+        th:text="${text}"></a>
+    </div>
+    <div th:fragment="link_with_snippet(href, text, snippet)">
+      <a th:href="${href}"> <i th:replace="${snippet}"></i> [[${text}]] </a>
+    </div>
+  </body>
+</html>

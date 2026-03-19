@@ -1,0 +1,109 @@
+custom:
+  security:
+    admin:
+      username: admin@mail.com
+      password: password
+      roles:
+        - admin
+        - user
+    user:
+      username: user@mail.com
+      password: password
+      roles:
+        - user
+    permit:
+      - /actuator/health
+      - /dist/**
+logging:
+  include-application-name: false
+  level:
+    com.hamza: debug
+server:
+  port: 0
+  ssl:
+    enabled: false
+spring:
+  application:
+    name: thymx
+  config:
+    activate:
+      on-profile: default
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 100
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:test_db
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+    properties:
+      hibernate:
+        batch_fetch_style: dynamic
+        cache:
+          region:
+            factory_class: org.hibernate.cache.jcache.internal.JCacheRegionFactory
+          use_query_cache: false
+          use_second_level_cache: false
+        default_batch_fetch_size: 0
+        enable_lazy_load_no_trans: false
+        format_sql: false
+        generate_statistics: true
+        globally_quoted_identifiers: true
+        javax:
+          cache:
+            missing_cache_strategy: create
+            provider: org.ehcache.jsr107.EhcacheCachingProvider
+            uri: ehcache.xml
+        jdbc:
+          batch_size: 0
+        jpa:
+          compliance:
+            query: false
+        max_fetch_depth: 1
+        order_inserts: false
+        order_updates: false
+        query:
+          fail_on_pagination_over_collection_fetch: true
+          in_clause_parameter_padding: true
+        session:
+          events:
+            log:
+              LOG_QUERIES_SLOWER_THAN_MS: '100'
+        show_sql: false
+  liquibase:
+    enabled: false
+  main:
+    banner-mode: off
+  messages:
+    basename: i18n/messages
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  output:
+    ansi:
+      enabled: ALWAYS
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  session:
+    jdbc:
+      initialize-schema: always
+  thymeleaf:
+    cache: false
+    template-resolver-order: 0
+  threads:
+    virtual:
+      enabled: true
+---
+spring:
+  config:
+    activate:
+      on-profile: postgres
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: null

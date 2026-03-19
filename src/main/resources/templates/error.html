@@ -1,0 +1,36 @@
+<!doctype html>
+<html
+  layout:decorate="~{layouts/error_page}"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <th:block layout:fragment="error_title">
+      <div class="flex justify-center">
+        <div class="join items-center space-x-8">
+          <div class="join-item">
+            <div class="inline-grid *:[grid-area:1/1]">
+              <div class="status status-xl status-error animate-ping"></div>
+              <div class="status status-xl status-error"></div>
+            </div>
+          </div>
+          <div class="join-item">
+            <h1
+              class="text-base-content text-2xl font-bold sm:text-3xl md:text-4xl"
+              th:text="#{ui.error}"></h1>
+          </div>
+        </div>
+      </div>
+    </th:block>
+    <th:block layout:fragment="error_content">
+      <div>Status: [[${status}]]</div>
+      <div class="wrap-break-word">Exception: [[${exception}]]</div>
+      <div
+        class="mockup-code w-full"
+        th:if="${trace}">
+        <pre class="wrap-break-word whitespace-pre-wrap">
+          <code th:text="${trace}"></code>
+        </pre>
+      </div>
+    </th:block>
+  </body>
+</html>

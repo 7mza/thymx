@@ -1,0 +1,65 @@
+<!--/*@thymesVar id="additionalClasses" type="kotlin.String"*/-->
+<!--/*@thymesVar id="flash" type="com.hamza.thymx.web.FlashPopulator"*/-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <button
+      class="btn btn-xs btn-ghost border-0 hover:bg-transparent hover:shadow-none focus:ring-0 focus:outline-none active:bg-transparent"
+      @click="remove"
+      th:fragment="close_button">
+      <svg th:replace="~{x-mark}"></svg>
+    </button>
+
+    <div
+      class="alert alert-vertical sm:alert-horizontal"
+      th:classappend="${additionalClasses}"
+      th:fragment="alert(additionalClasses, svg, title, text, duration)"
+      role="alert"
+      th:x-data="${duration} ? |alert(${duration})| : 'alert'">
+      <svg th:replace="~{${svg}}"></svg>
+      <div>
+        <h3
+          class="font-bold"
+          th:text="${title}"></h3>
+        <div
+          class="text-xs"
+          th:text="${text}"></div>
+      </div>
+      <button th:replace="~{:: close_button}"></button>
+    </div>
+
+    <div
+      class="alert alert-vertical sm:alert-horizontal alert-success"
+      th:fragment="flash_alert(flash, duration)"
+      role="alert"
+      th:x-data="${duration} ? |alert(${duration})| : 'alert'">
+      <svg th:replace="~{check-circle}"></svg>
+      <div>
+        <div
+          class="text-xs"
+          th:if="${flash.operation.name == 'CREATED'}"
+          th:text="${#messages.msg('ui.created', flash.details)}"></div>
+        <div
+          class="text-xs"
+          th:if="${flash.operation.name == 'UPDATED'}"
+          th:text="${#messages.msg('ui.updated', flash.details)}"></div>
+        <div
+          class="text-xs"
+          th:if="${flash.operation.name == 'DELETED'}"
+          th:text="${#messages.msg('ui.deleted', flash.details)}"></div>
+      </div>
+      <button th:replace="~{:: close_button}"></button>
+    </div>
+
+    <div
+      class="toast"
+      th:fragment="toast(text)"
+      x-data="toast">
+      <div
+        class="alert"
+        th:classappend="${additionalClasses}">
+        <span th:text="${text}"></span>
+      </div>
+    </div>
+  </body>
+</html>

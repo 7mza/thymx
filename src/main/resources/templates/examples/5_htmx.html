@@ -1,0 +1,122 @@
+<!doctype html>
+<html
+  layout:decorate="~{layouts/content_page}"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:th="http://www.thymeleaf.org"
+  th:with="activeMenu='htmx'">
+  <head>
+    <title>htmx</title>
+  </head>
+  <body>
+    <div layout:fragment="content">
+      <div class="items-center space-y-2 space-x-2">
+        <div class="mockup-code w-auto">
+          <pre>
+            <code>
+input, textarea & select are triggered on change event,
+form is triggered on submit,
+everything else is triggered on click,
+use hx-trigger to configure
+            </code>
+          </pre>
+        </div>
+        <h2>triggers</h2>
+        <div
+          class="badge badge-primary"
+          id="message">
+          hi there!
+        </div>
+        <br />
+        <button
+          class="btn btn-xs w-auto"
+          th:hx-get="@{/htmx/rest}"
+          hx-target="#message">
+          rest
+        </button>
+        <button
+          class="btn btn-xs w-auto"
+          th:hx-get="@{/htmx/web}"
+          hx-target="#message"
+          hx-trigger="click">
+          html
+        </button>
+        <input
+          class="input input-sm w-auto"
+          th:hx-get="@{/htmx/rest}"
+          hx-target="#message"
+          hx-trigger="keyup changed delay:500ms"
+          name="q"
+          placeholder="keyup changed"
+          type="text" />
+        <!-- <div class="badge badge-neutral" th:hx-get="@{/htmx/rest}" hx-target="this" hx-trigger="keyup[shiftKey&&key=='K'] from:body">shift-k</div> -->
+        <div
+          class="badge badge-neutral"
+          th:hx-get="@{/htmx/rest}"
+          hx-target="this"
+          hx-trigger="load">
+          load
+        </div>
+        <div
+          class="badge badge-neutral"
+          th:hx-get="@{/htmx/rest}"
+          hx-target="this"
+          hx-trigger="load delay:5s">
+          load delay
+        </div>
+        <progress th:replace="~{examples/htmx :: progress}"></progress>
+        <div
+          class="badge badge-neutral"
+          th:hx-get="@{/htmx/rest}"
+          hx-target="this"
+          hx-trigger="revealed delay:5s">
+          revealed
+        </div>
+        <div
+          class="badge badge-neutral"
+          th:hx-get="@{/htmx/rest}"
+          hx-target="this"
+          hx-trigger="every 5s">
+          every
+        </div>
+        <br />
+        <h2>targets</h2>
+        <div class="join space-x-2">
+          <div class="join-item">Azerty</div>
+          <div class="join-item">Qwerty</div>
+          <span class="join-item">
+            <button
+              class="btn btn-xs w-auto"
+              th:hx-get="@{/htmx/rest}"
+              hx-target="closest span"
+              hx-trigger="click">
+              closest (parent)
+            </button>
+          </span>
+          <button
+            class="btn btn-xs join-item w-auto"
+            th:hx-get="@{/htmx/rest}"
+            hx-target="previous div"
+            hx-trigger="click">
+            previous
+          </button>
+          <button
+            class="btn btn-xs join-item w-auto"
+            th:hx-get="@{/htmx/rest}"
+            hx-target="next div"
+            hx-trigger="click">
+            next
+          </button>
+          <button
+            class="btn btn-xs join-item w-auto"
+            th:hx-get="@{/htmx/rest}"
+            hx-target="find span"
+            hx-trigger="click">
+            find (child)
+            <span> toto</span>
+          </button>
+          <div class="join-item">Swerty</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

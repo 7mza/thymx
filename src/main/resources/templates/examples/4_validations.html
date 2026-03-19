@@ -1,0 +1,79 @@
+<!doctype html>
+<html
+  layout:decorate="~{layouts/content_page}"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:th="http://www.thymeleaf.org"
+  th:with="activeMenu='validations'">
+  <head>
+    <title>validations</title>
+  </head>
+  <body>
+    <div layout:fragment="content">
+      <div class="space-y-2 overflow-x-auto">
+        <form
+          th:action="@{/validations}"
+          method="post"
+          th:object="${test}">
+          <fieldset
+            class="fieldset bg-base-200 border-base-300 rounded-box w-full space-y-4 border p-4">
+            <legend class="fieldset-legend">Validations</legend>
+            <label
+              th:replace="~{fragments/form :: floating_input(
+                name='testField1',
+                text='test.testField1',
+                type='text',
+                isRequired=false
+                )}"></label>
+            <label
+              th:replace="~{fragments/form :: floating_input(
+                name='testField2',
+                text='test.testField2',
+                type='text',
+                isRequired=false
+                )}"></label>
+            <label
+              th:replace="~{fragments/form :: floating_input(
+                name='testField3',
+                text='test.testField3',
+                type='text',
+                isRequired=false
+                )}"></label>
+            <label
+              th:replace="~{fragments/form :: floating_input(
+                name='testField4',
+                text='test.testField4',
+                type='text',
+                isRequired=false
+                )}"></label>
+            <label
+              th:replace="~{fragments/form :: floating_input(
+                name='testField5',
+                text='test.testField5',
+                type='text',
+                isRequired=false
+                )}"></label>
+            <label
+              th:replace="~{fragments/form :: floating_input(
+                name='testField6',
+                text='test.testField6',
+                type='text',
+                isRequired=false
+                )}"></label>
+            <button
+              th:replace="~{fragments/input :: _button(
+                text='form.submit',
+                color='btn-primary',
+                type='submit'
+                )}"></button>
+            <button
+              th:replace="~{fragments/input :: _button(
+                text='form.cancel',
+                color='btn-secondary',
+                type='reset'
+                )}"></button>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

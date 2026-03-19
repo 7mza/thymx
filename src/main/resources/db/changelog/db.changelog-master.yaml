@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/pgsql/000_spring_jdbc_session.sql
+  - include:
+      file: db/changelog/pgsql/001_thymx_jpa.sql

@@ -1,0 +1,110 @@
+<!--/*@thymesVar id="user" type="com.hamza.thymx.users.CreateUserDto"*/-->
+<!--/*@thymesVar id="groups" type="com.hamza.thymx.web.SelectPopulator"*/-->
+<!--/*@thymesVar id="genders" type="com.hamza.thymx.web.RadioPopulator"*/-->
+<!doctype html>
+<html
+  layout:decorate="~{layouts/user_form}"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:th="http://www.thymeleaf.org"
+  th:with="activeMenu='users'">
+  <head>
+    <title th:text="#{user.create}"></title>
+  </head>
+  <body>
+    <form
+      th:action="@{/users/create}"
+      layout:fragment="form"
+      method="post"
+      th:object="${user}">
+      <div th:replace="~{fragments/form :: form_errors_alert}"></div>
+      <fieldset
+        class="fieldset bg-base-200 border-base-300 rounded-box grid w-full grid-cols-1 space-y-4 border p-4 md:grid-cols-2">
+        <legend
+          class="fieldset-legend"
+          th:text="#{user.create}"></legend>
+        <label
+          th:replace="~{fragments/form :: floating_input(
+            name='input.firstName',
+            text='user.firstName',
+            type='text',
+            pattern='.*\S.*',
+            hint='validation.name'
+            )}"></label>
+        <label
+          th:replace="~{fragments/form :: floating_input(
+            name='input.lastName',
+            text='user.lastName',
+            type='text',
+            pattern='.*\S.*',
+            hint='validation.name'
+            )}"></label>
+        <div
+          th:replace="~{fragments/form :: labeled_radio(
+          text='user.gender',
+          name='input.gender',
+          radioPop=${genders}
+          )}"></div>
+        <label
+          th:replace="~{fragments/form :: floating_flatpicker(
+            name='input.birthday',
+            text='user.birthday.placeholder',
+            hint='validation.date'
+            )}"></label>
+        <label
+          th:replace="~{fragments/form :: floating_input(
+            name='input.email',
+            text='user.email',
+            type='email',
+            hint='validation.email'
+            )}"></label>
+        <div class="join grid w-full grid-cols-3 gap-4">
+          <div class="join-item col-span-1">
+            <label
+              th:replace="~{fragments/form :: floating_input(
+                name='input.phonePrefix',
+                text='user.phonePrefix',
+                type='text',
+                pattern='^\+?\d{1,6}$',
+                minlength='2',
+                maxlength='6',
+                hint='validation.phonePrefix',
+                isRequired=false
+                )}"></label>
+          </div>
+          <div class="join-item col-span-2">
+            <label
+              th:replace="~{fragments/form :: floating_input(
+                name='input.phoneNumber',
+                text='user.phoneNumber',
+                type='tel',
+                pattern='[0-9]*',
+                minlength='10',
+                maxlength='10',
+                hint='validation.phoneNumber'
+                )}"></label>
+          </div>
+        </div>
+        <label
+          th:replace="~{fragments/form :: floating_select(
+            name='input.groupId',
+            text='user.group',
+            selectPop=${groups},
+            isRequired=false
+            )}"></label>
+        <div></div>
+        <button
+          th:replace="~{fragments/input :: _button(
+            text='form.cancel',
+            color='btn-secondary',
+            type='reset'
+            )}"></button>
+        <button
+          th:replace="~{fragments/input :: _button(
+            text='form.submit',
+            color='btn-primary',
+            type='submit'
+            )}"></button>
+      </fieldset>
+    </form>
+  </body>
+</html>

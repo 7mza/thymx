@@ -1,0 +1,73 @@
+<!--/*@thymesVar id="additionalClasses" type="kotlin.String"*/-->
+<!--/*@thymesVar id="hideOnMobile" type="kotlin.Boolean"*/-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <button
+      class="btn"
+      th:@click="|$store.deleteModal.show('${id}', '${details}')|"
+      th:fragment="delete_modal_button(id, details, text)"
+      th:text="#{${text}}"
+      x-data></button>
+
+    <td
+      th:@click="|$store.deleteModal.show('${id}', '${details}')|"
+      th:classappend="${hideOnMobile} ? 'hidden sm:table-cell'"
+      th:fragment="delete_modal_td(id, details, href, svg)"
+      x-data>
+      <a
+        class="text-base-content transition-colors"
+        th:classappend="${additionalClasses}"
+        th:href="${href}">
+        <svg th:replace="~{${svg}}"></svg>
+      </a>
+    </td>
+
+    <dialog
+      class="modal modal-bottom sm:modal-middle"
+      @click.self="$store.deleteModal.hide()"
+      @keydown.escape.window="$store.deleteModal.hide()"
+      th:fragment="delete_modal(title, text, baseUrl)"
+      x-data="deleteModal"
+      th:x-init="|$store.deleteModal.setBaseUrl('${baseUrl}')|">
+      <div class="modal-box">
+        <div class="join space-x-12">
+          <div class="join-item flex items-center">
+            <svg th:replace="~{trash}"></svg>
+          </div>
+          <div class="join-item">
+            <h3
+              class="text-lg font-bold"
+              th:text="#{${title}}"></h3>
+            <div
+              class="badge badge-neutral"
+              x-text="$store.deleteModal.details"></div>
+            <p
+              class="py-4"
+              th:text="#{${text}}"></p>
+            <form
+              :action="$store.deleteModal.url"
+              th:method="delete">
+              <input th:replace="~{fragments/input :: csrf}" />
+              <div class="space-x-4">
+                <button
+                  th:replace="~{fragments/input :: _button(
+                    text='form.cancel',
+                    color='btn-secondary',
+                    type='reset',
+                    at_click='$store.deleteModal.hide()'
+                    )}"></button>
+                <button
+                  th:replace="~{fragments/input :: _button(
+                    text='form.submit',
+                    color='btn-primary',
+                    type='submit'
+                    )}"></button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </dialog>
+  </body>
+</html>

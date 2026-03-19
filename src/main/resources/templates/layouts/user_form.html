@@ -1,0 +1,40 @@
+<!--/*@thymesVar id="nonce" type="kotlin.String"*/-->
+<!--/*@thymesVar id="assetManifest" type="kotlin.collections.Map"*/-->
+<!doctype html>
+<html
+  layout:decorate="~{layouts/content_page}"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:th="http://www.thymeleaf.org"
+  th:with="activeMenu='users'">
+  <head>
+    <title
+      th:text="#{users}"
+      layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE"></title>
+    <link
+      as="style"
+      th:href="${assetManifest['flatpickr_dark.css']}"
+      rel="preload" />
+    <link
+      :disabled="$store.theme.value !== 'dark'"
+      th:href="${assetManifest['flatpickr_dark.css']}"
+      rel="stylesheet"
+      type="text/css"
+      x-data />
+  </head>
+  <body>
+    <div layout:fragment="content">
+      <div class="space-y-2 overflow-x-auto">
+        <div class="flex flex-row justify-between">
+          <a th:replace="~{fragments/input :: back_button('/users/list')}"></a>
+          <span></span>
+        </div>
+        <form layout:fragment="form"></form>
+      </div>
+    </div>
+    <th:block layout:fragment="scripts">
+      <script
+        th:attr="nonce=${nonce}"
+        th:src="${assetManifest['flatpickr_init.js']}"></script>
+    </th:block>
+  </body>
+</html>

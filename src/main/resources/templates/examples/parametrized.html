@@ -1,0 +1,13 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div
+      th:classappend="${primary ? 'text-primary' : 'text-secondary'}"
+      layout:fragment="parametrized(primary)">
+      <div layout:fragment="message">colored message here</div>
+    </div>
+  </body>
+</html>
