@@ -7,14 +7,14 @@ plugins {
     kotlin("jvm") version "2.3.20"
     kotlin("plugin.jpa") version "2.3.20"
     kotlin("plugin.spring") version "2.3.20"
-    id("org.springframework.boot") version "4.0.3"
+    id("org.springframework.boot") version "4.0.4"
     id("io.spring.dependency-management") version "1.1.7"
 
     id("com.github.ben-manes.versions") version "0.53.0"
     id("com.github.node-gradle.node") version "7.1.0"
     id("com.google.cloud.tools.jib") version "3.5.3"
-    // id("org.graalvm.buildtools.native") version "0.11.4"
-    id("org.hibernate.orm") version "7.2.4.Final"
+    // id("org.graalvm.buildtools.native") version "0.11.5"
+    id("org.hibernate.orm") version "7.2.7.Final"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
     jacoco
 }
@@ -42,7 +42,7 @@ val dataFakerVersion = "2.5.4"
 val htmxThymeleafVersion = "5.1.0"
 val hypersistenceTsidVersion = "2.1.4"
 val mockitoAgent: Configuration = configurations.create("mockitoAgent")
-val mockitoCoreVersion = "5.22.0"
+val mockitoCoreVersion = "5.23.0"
 val mockitoKotlinVersion = "6.2.3"
 val openapiVersion = "3.0.2"
 val thymeleafExtraVersion = "3.1.3.RELEASE"
